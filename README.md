@@ -50,7 +50,6 @@ Note: Using the links provided here help to support these types of projects. Tha
     <tr><td>CS</td><td>D8</td><td>GPIO15 (CS)</td></tr>
 </table>
 
-
 ## 3D Printed Case by ninharp:  
 https://www.thingiverse.com/thing:3532451
 
