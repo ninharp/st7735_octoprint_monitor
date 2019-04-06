@@ -257,8 +257,8 @@ void setup() {
   ui.setTargetFPS(1);
   ui.disableAllIndicators();
   ui.setFrames(frames, (numberOfFrames));
-  frames[0] = drawScreen1;
-  frames[1] = drawScreen2;
+  frames[0] = drawScreen1; // Tempscreen
+  frames[1] = drawScreen2; // Timescreen
   //frames[2] = drawScreen3;
   clockFrame[0] = drawClock;
   clockFrame[1] = drawWeather;
@@ -940,39 +940,41 @@ void drawClock(Adafruit_ST7735 *display, ST7735DisplayUiState* state, int16_t x,
   if (IS_24HOUR) {
     displayTime = timeClient.getHours() + ":" + timeClient.getMinutes() + ":" + timeClient.getSeconds(); 
   }
-  display->setFont();
-  display->setTextSize(1);
-  drawStringCentered(display, x, 116 + y, OctoPrintHostName);
 
   display->setFont(&FreeSansBold12pt7b);
   drawStringCentered(display, x, y + (display->height() + 12) / 2, displayTime);
 }
 
 void drawBitcoin(Adafruit_ST7735 *display, ST7735DisplayUiState* state, int16_t x, int16_t y) {
-  //display->drawXbm(x + 2, y + 1, Bitcoin_width, Bitcoin_height, Bitcoin_bits); //TODO
+  display->drawBitmap(x + 2, 36, bitcoin_bits, bitcoin_width, bitcoin_height, ST77XX_WHITE);
   if (BitcoinCurrencyCode != "NONE" && BitcoinCurrencyCode != "") {
     String btc = bitcoinClient.getRate() + " " + bitcoinClient.getCode();
-    display->setTextSize(2);
+    display->setFont();
+    display->setTextSize(1);
     //display->setFont(Roboto_14);
-    display->setCursor(80 + x, 0 + y);
-    display->println("Bitcoin");
+    display->setCursor(52 + x, 50 + y);
+    display->println("Bitcoin BTC");
     //display->setFont(Roboto_14);
-    display->setCursor(80 + x, 17 + y);
+    display->setCursor(52 + x, 67 + y);
     display->println(btc);
   }
 }
 
 void drawWeather(Adafruit_ST7735 *display, ST7735DisplayUiState* state, int16_t x, int16_t y) {
-  display->setTextSize(3);
-  display->setCursor(0 + x, 0 + y);
+  display->setFont();
+  display->setTextSize(2);
+  display->setCursor(4 + x, 42 + y);
   display->println(weatherClient.getTempRounded(0) + getTempSymbol());
+  //display.drawChar(34 + x, 38 + y, , ST77XX_WHITE, ST77XX_BLACK, 2);
 
-  display->setTextSize(3);
-  display->setCursor(0 + x, 24 + y);
+  display->setTextSize(1);
+  display->setCursor(4 + x, 68 + y);
   display->println(weatherClient.getCondition(0));
-  //TODO
-  //display->setFont((const uint8_t*)Meteocons_Plain_42);
-  //display->drawString(86 + x, 0 + y, weatherClient.getWeatherIcon(0));
+
+  display->setFont(&Meteocons_Regular_42);
+  display->setCursor(70 + x, 80 + y);
+  display->println(weatherClient.getWeatherIcon(0));
+  display->setFont();
 }
 
 String getTempSymbol() {
@@ -987,7 +989,7 @@ String getTempSymbol(boolean forHTML) {
   if (forHTML) {
     rtnValue = "&#176;" + rtnValue;
   } else {
-    rtnValue = "°" + rtnValue;
+    rtnValue = char((unsigned char)(247)) + rtnValue;
   }
   return rtnValue;
 }
@@ -1050,33 +1052,35 @@ void drawClockHeaderOverlay(Adafruit_ST7735 *display, ST7735DisplayUiState* stat
   display->setTextColor(ST77XX_WHITE);
   display->setFont();
   display->setTextSize(1);
+  drawStringCentered(display, 0, 4, OctoPrintHostName);
+  
+  /*
   String displayTime = timeClient.getAmPmHours() + ":" + timeClient.getMinutes();
   if (IS_24HOUR) {
     displayTime = timeClient.getHours() + ":" + timeClient.getMinutes();
   }
   display->setCursor(1, 116);
   display->println(displayTime);
-  
-  if (!IS_24HOUR) {
-    String ampm = timeClient.getAmPm();
-    display->setCursor(32, 116);
-    display->println(ampm);
-  }
+  */
   
   if (!IS_24HOUR) {
     display->setTextSize(1);
-    display->setCursor(32, 116);
-    display->println(timeClient.getAmPm());
+    //display->setCursor(32, 116);
+    //display->println(timeClient.getAmPm());
     if (printerClient.isPSUoff()) {
-      drawStringCentered(display, 0, 4, "psu off");
+      display->setCursor(1, 116);
+      display->println("psu off");
     } else {
-      drawStringCentered(display, 0, 4, "offline");
+      display->setCursor(1, 116);
+      display->println("offline");
     }
   } else {
     if (printerClient.isPSUoff()) {
-      drawStringCentered(display, 0, 4, "psu off");
+      display->setCursor(1, 116);
+      display->println("psu off");
     } else {
-      drawStringCentered(display, 0, 4, "offline");
+      display->setCursor(1, 116);
+      display->println("offline");
     }
   }
 
@@ -1329,8 +1333,10 @@ void checkDisplay() {
     if ((!printerClient.isOperational() || printerClient.isPSUoff()) && !isClockOn) {
       Serial.println("Clock Mode is turned on.");
       if (!DISPLAYWEATHER) {
-        ui.disableAutoTransition();
+        //ui.disableAutoTransition();
+        ui.enableAutoTransition();
         ui.setFrames(clockFrame, 2);
+        //if bitcoin foo here
         clockFrame[0] = drawClock;
         clockFrame[1] = drawBitcoin;
       } else {

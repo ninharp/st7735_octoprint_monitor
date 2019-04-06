@@ -1,9 +1,9 @@
 ** Porting
-* Change bottom left clock to "offline" "psu off" its redundant in clock mode and the offline on the top looks weird
+* Splash screen!
 * Display off is missing, maybe just LED pin on any digital pin or some fet between?
 * Frames/Flickering ... maybe every function is responsible for the cleaning itself is a possibility!?
 * Add Bitcoin to configuration webpage
-* Weather font is missing and also the whole screen isn ready yet
+* Add pictures of complete webinterface for the readme
 
 ** Features
 * Readd screen3 with dimensions, filament info and foo

@@ -140,7 +140,7 @@ void ST7735DisplayUi::runLoadingProcess(LoadingStage* stages, uint8_t stagesCoun
     yield();
   }
 
-  display->fillScreen(ST77XX_BLACK);
+  //display->fillScreen(ST77XX_BLACK);
   this->loadingDrawFunction(this->display, &stages[stagesCount-1], progress);
   //display->display(); //Display?
 

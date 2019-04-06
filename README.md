@@ -110,10 +110,13 @@ Daniel Eichhorn -- Author of the TimeClient class and OLEDDisplayUi
 Florian Schütte -- added flip display to web interface  
 Owen Carter -- Added psu control setting (v2.4)   
 Michael Sauer -- Ported to Adafruit GFX and ST7735 Display  
-
-Contributing to this software is warmly welcomed. You can do this basically by
-forking from master, committing modifications and then making a pulling requests to be reviewed (follow the links above
-for operating guide).  Detailed comments are encouraged.  Adding change log and your contact into file header is encouraged.
+  
+Images used here are created with Gimp - GNU Image Manipulation Program  
+The Fonts used are created by Squix Font Converter - http://oleddisplay.squix.ch  
+  
+Contributing to this software is warmly welcomed. You can do this basically by  
+forking from master, committing modifications and then making a pulling requests to be reviewed (follow the links above  
+for operating guide).  Detailed comments are encouraged.  Adding change log and your contact into file header is encouraged.  
 Thanks for your contribution.
 
 

@@ -54,6 +54,7 @@ SOFTWARE.
 #include <Fonts/FreeSansBold12pt7b.h>
 #include <Fonts/FreeSans9pt7b.h>
 #include <Fonts/FreeSansBold9pt7b.h>
+#include "MeteoconsRegular42pt.h"
 
 // OctoPrint Monitoring -- Monitor your 3D printer OctoPrint Server
 String OctoPrintApiKey = "";   // ApiKey from your User Account on OctoPrint
