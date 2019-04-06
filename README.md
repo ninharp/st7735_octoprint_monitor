@@ -60,7 +60,7 @@ Version 2.2 introduced the ability to upgrade pre-compiled firmware from a binar
 * **printermonitor.ino.nodemcu_0.9_ST7735.bin** - compiled for NodeMCU 0.9 ESP-12 for 1,44" ST7735 TFT (default)
 * **printermonitor.ino.nodemcu_1.0_ST7735.bin** - compiled for NodeMCU 1.0 ESP-12E for 1,44" ST7735 TFT (default)
 
-## Compiling and Loading to Wemos D1 Mini
+## Compiling and Loading to NodeMCU
 It is recommended to use Arduino IDE.  You will need to configure Arduino IDE to work with the NodeMCU board and USB port and installed the required USB drivers etc.  
 * USB CH340G drivers:  https://github.com/nodemcu/nodemcu-devkit/tree/master/Drivers
 * Enter http://arduino.esp8266.com/stable/package_esp8266com_index.json into Additional Board Manager URLs field. You can add multiple URLs, separating them with commas.  This will add support for the NodeMCU to Arduino IDE.

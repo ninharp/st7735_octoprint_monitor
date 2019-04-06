@@ -30,10 +30,10 @@ SOFTWARE.
 
 #include "config.h"
 
-#define VERSION "2.5"
+#define VERSION "0.1"
 
 #define HOSTNAME "OctMon-" 
-#define CONFIG "/conf.txt"
+#define CONFIG "/.config"
 
 /* Useful Constants */
 #define SECS_PER_MIN  (60UL)
@@ -57,14 +57,15 @@ void drawProgress(Adafruit_ST7735 *display, int percentage, String label);
 void drawOtaProgress(unsigned int, unsigned int);
 void drawScreen1(Adafruit_ST7735 *display, ST7735DisplayUiState* state, int16_t x, int16_t y);
 void drawScreen2(Adafruit_ST7735 *display, ST7735DisplayUiState* state, int16_t x, int16_t y);
-void drawScreen3(Adafruit_ST7735 *display, ST7735DisplayUiState* state, int16_t x, int16_t y);
+//void drawScreen3(Adafruit_ST7735 *display, ST7735DisplayUiState* state, int16_t x, int16_t y);
 void drawHeaderOverlay(Adafruit_ST7735 *display, ST7735DisplayUiState* state);
 void drawClock(Adafruit_ST7735 *display, ST7735DisplayUiState* state, int16_t x, int16_t y);
 void drawWeather(Adafruit_ST7735 *display, ST7735DisplayUiState* state, int16_t x, int16_t y);
 void drawClockHeaderOverlay(Adafruit_ST7735 *display, ST7735DisplayUiState* state);
+void drawStringCentered(Adafruit_ST7735 *display, int16_t x, int16_t y, String text);
 
 // Set the number of Frames supported
-const int numberOfFrames = 3;
+const int numberOfFrames = 2; //3;
 FrameCallback frames[numberOfFrames];
 FrameCallback clockFrame[3];
 boolean isClockOn = false;
@@ -225,9 +226,12 @@ void setup() {
 
   display.setTextWrap(false);
   display.fillScreen(ST77XX_BLACK);
-  display.setCursor(10, 60);
-  display.setTextSize(3);
-  display.println("#nin3d");
+  //display.setCursor(20, 60);
+  display.setFont(&FreeSansBold12pt7b);
+  drawStringCentered(&display, 0, 60, "#nin3d");
+  display.setFont(&FreeSans9pt7b);
+  drawStringCentered(&display, 0, 90, "Version "+String(VERSION));
+  
   delay(1000);
    
   //WiFiManager
@@ -249,13 +253,13 @@ void setup() {
   
   // You can change the transition that is used
   // SLIDE_LEFT, SLIDE_RIGHT, SLIDE_TOP, SLIDE_DOWN
-  ui.setFrameAnimation(SLIDE_DOWN);
-  ui.setTargetFPS(30);
+  ui.setFrameAnimation(SLIDE_RIGHT);
+  ui.setTargetFPS(1);
   ui.disableAllIndicators();
   ui.setFrames(frames, (numberOfFrames));
   frames[0] = drawScreen1;
   frames[1] = drawScreen2;
-  frames[2] = drawScreen3;
+  //frames[2] = drawScreen3;
   clockFrame[0] = drawClock;
   clockFrame[1] = drawWeather;
   clockFrame[2] = drawBitcoin;
@@ -313,26 +317,25 @@ void setup() {
     // Print the IP address
     String webAddress = "http://" + WiFi.localIP().toString() + ":" + String(WEBSERVER_PORT) + "/";
     Serial.println("Use this URL : " + webAddress);
+    display.setTextWrap(false);
     display.fillScreen(ST77XX_BLACK);
-    display.setTextSize(1);
-    display.setCursor(64, 10);
-    display.println("Web Interface On");
-    display.setCursor(64, 20);
-    display.println("You May Connect to IP");
-    display.setTextSize(2);
-    display.setCursor(64, 30);
-    display.println(WiFi.localIP().toString());
-    display.setCursor(64, 46);
-    display.println("Port: " + String(WEBSERVER_PORT));
-    // */
+    display.setTextColor(ST77XX_WHITE);
+    display.setFont();
+    drawStringCentered(&display, 0, 30, "Web Interface On");
+    drawStringCentered(&display, 0, 50, "You May Connect to IP");
+    display.setTextColor(ST77XX_YELLOW);
+    drawStringCentered(&display, 0, 70, WiFi.localIP().toString());
+    drawStringCentered(&display, 0, 86, "Port: " + String(WEBSERVER_PORT));
+    display.setTextColor(ST77XX_WHITE);
   } else {
     Serial.println("Web Interface is Disabled");
+    display.setTextWrap(false);
     display.fillScreen(ST77XX_BLACK);
+    display.setTextColor(ST77XX_WHITE);
     display.setTextSize(1);
-    display.setCursor(64, 10);
-    display.println("Web Interface is Off");
-    display.setCursor(64, 20);
-    display.println("Enable in config.h");
+    display.setFont();
+    drawStringCentered(&display, 0, 50, "Web Interface is Off");
+    drawStringCentered(&display, 0, 70, "Enable in config.h");
   }
   flashLED(5, 500);
   findMDNS();  //go find Octoprint Server by the hostname
@@ -835,18 +838,19 @@ void configModeCallback (WiFiManager *myWiFiManager) {
   Serial.println("Entered config mode");
   Serial.println(WiFi.softAPIP());
 
+  
+  display.setTextWrap(false);
   display.fillScreen(ST77XX_BLACK);
+  display.setTextColor(ST77XX_WHITE);
   display.setTextSize(1);
-  display.setCursor(64, 0);
-  display.println("Wifi Manager");
-  display.setCursor(64, 10);
-  display.println("Please connect to AP");
-  display.setTextSize(2);
-  display.setCursor(64, 23);
-  display.println(myWiFiManager->getConfigPortalSSID());
-  display.setTextSize(1);
-  display.setCursor(64, 42);
-  display.println("To setup Wifi connection");
+  display.setFont();
+  drawStringCentered(&display, 0, 30, "Wifi Manager");
+  drawStringCentered(&display, 0, 40, "Please connect to AP");
+  display.setTextColor(ST77XX_YELLOW);
+  drawStringCentered(&display, 0, 58, myWiFiManager->getConfigPortalSSID());
+  display.setTextColor(ST77XX_WHITE);
+  drawStringCentered(&display, 0, 76, "To setup Wifi");
+  drawStringCentered(&display, 0, 86, "connection");
   
   Serial.println("Wifi Manager");
   Serial.println("Please connect to AP");
@@ -866,59 +870,68 @@ void flashLED(int number, int delayTime) {
 }
 
 void drawScreen1(Adafruit_ST7735 *display, ST7735DisplayUiState* state, int16_t x, int16_t y) {
-  String bed = printerClient.getValueRounded(printerClient.getTempBedActual());
-  String tool = printerClient.getValueRounded(printerClient.getTempToolActual());
-  display->setTextSize(2);
-  if (bed != "0") {
-    display->setCursor(64 + x, 0 + y);
-    display->println("Bed / Tool Temp");
+  String bed_act = printerClient.getValueRounded(printerClient.getTempBedActual());
+  String tool_act = printerClient.getValueRounded(printerClient.getTempToolActual());
+  String bed_tgt = printerClient.getValueRounded(printerClient.getTempBedTarget());
+  String tool_tgt = printerClient.getValueRounded(printerClient.getTempToolTarget());
+  
+  display->setFont();
+  display->setTextSize(1);
+  if (bed_act != "0") {
+    drawStringCentered(display, x, 4 + y, "Temperature");
   } else {
-    display->setCursor(64 + x, 0 + y);
-    display->println("Tool Temp");
+    drawStringCentered(display, x, 4 + y, "Tool Temp");
   }
   
-  display->setTextSize(3);
-  if (bed != "0") {
-    display->setCursor(2 + x, 14 + y);
-    display->println(bed + "°");
-    display->setCursor(64 + x, 14 + y);
-    display->println(tool + "°");
+  display->setFont(&FreeSans12pt7b);
+  if (bed_act != "0") {
+    display->drawBitmap(12, 46, nozzle_bits, nozzle_width, nozzle_height, ST77XX_WHITE);
+    display->drawBitmap(64, 46, bed_bits, bed_width, bed_height, ST77XX_WHITE);
+    
+    // soll
+    display->setCursor(7 + x, 40 + y);
+    display->println(tool_act);
+    display->setCursor(78 + x, 40 + y);
+    display->println(bed_tgt);
+
+    // ist
+    display->setCursor(7 + x, 104 + y);
+    display->println(tool_tgt);
+    display->setCursor(78 + x, 104 + y);
+    display->println(bed_act);
   } else {
-    display->setCursor(64 + x, 14 + y);
-    display->println(tool + "°");
+    display->drawBitmap(x + (display->width() - nozzle_width) / 2, 46, nozzle_bits, nozzle_width, nozzle_height, ST77XX_WHITE);
+    drawStringCentered(display, x, 40 + y, tool_tgt);
+    drawStringCentered(display, x, 104 + y, tool_act);
   }
 }
 
 void drawScreen2(Adafruit_ST7735 *display, ST7735DisplayUiState* state, int16_t x, int16_t y) {
-  display->setTextSize(2);
+  display->setFont();
+  display->setTextSize(1);
+  drawStringCentered(display, x, 4 + y, "Time Overview");
 
-  display->setCursor(64 + x, 0 + y);
-  display->println("Time Remaining");
-  display->setTextSize(3);
-  int val = printerClient.getProgressPrintTimeLeft().toInt();
-  int hours = numberOfHours(val);
-  int minutes = numberOfMinutes(val);
-  int seconds = numberOfSeconds(val);
+  display->setFont(&FreeSans9pt7b);
+  drawStringCentered(display, x, 34 + y, "Elapsed");
+  drawStringCentered(display, x, 80 + y, "Remaining");
 
-  String time = zeroPad(hours) + ":" + zeroPad(minutes) + ":" + zeroPad(seconds);
-  display->setCursor(64 + x, 14 + y);
-  display->println(time);
-}
-
-void drawScreen3(Adafruit_ST7735 *display, ST7735DisplayUiState* state, int16_t x, int16_t y) {
-  display->setTextSize(2);
-
-  display->setCursor(64 + x, 0 + y);
-  display->println("Printing Time");
-  display->setTextSize(3);
+  display->setFont(&FreeSansBold12pt7b);
+  
   int val = printerClient.getProgressPrintTime().toInt();
   int hours = numberOfHours(val);
   int minutes = numberOfMinutes(val);
   int seconds = numberOfSeconds(val);
 
   String time = zeroPad(hours) + ":" + zeroPad(minutes) + ":" + zeroPad(seconds);
-  display->setCursor(64 + x, 14 + y);
-  display->println(time);
+  drawStringCentered(display, x, 56 + y, time);
+
+  val = printerClient.getProgressPrintTimeLeft().toInt();
+  hours = numberOfHours(val);
+  minutes = numberOfMinutes(val);
+  seconds = numberOfSeconds(val);
+
+  time = zeroPad(hours) + ":" + zeroPad(minutes) + ":" + zeroPad(seconds);
+  drawStringCentered(display, x, 104 + y, time);
 }
 
 void drawClock(Adafruit_ST7735 *display, ST7735DisplayUiState* state, int16_t x, int16_t y) {
@@ -927,13 +940,12 @@ void drawClock(Adafruit_ST7735 *display, ST7735DisplayUiState* state, int16_t x,
   if (IS_24HOUR) {
     displayTime = timeClient.getHours() + ":" + timeClient.getMinutes() + ":" + timeClient.getSeconds(); 
   }
-  display->setTextSize(2);
-  display->setCursor(64 + x, 0 + y);
-  display->println(OctoPrintHostName);
-  display->setTextSize(3);
-  
-  display->setCursor(64 + x, 17 + y);
-  display->println(displayTime);
+  display->setFont();
+  display->setTextSize(1);
+  drawStringCentered(display, x, 116 + y, OctoPrintHostName);
+
+  display->setFont(&FreeSansBold12pt7b);
+  drawStringCentered(display, x, y + (display->height() + 12) / 2, displayTime);
 }
 
 void drawBitcoin(Adafruit_ST7735 *display, ST7735DisplayUiState* state, int16_t x, int16_t y) {
@@ -997,87 +1009,110 @@ String zeroPad(int value) {
 }
 
 void drawHeaderOverlay(Adafruit_ST7735 *display, ST7735DisplayUiState* state) {
-  display->setTextColor(ST77XX_WHITE);
-  display->setTextSize(2);
+  
   String displayTime = timeClient.getAmPmHours() + ":" + timeClient.getMinutes();
   if (IS_24HOUR) {
     displayTime = timeClient.getHours() + ":" + timeClient.getMinutes();
   }
-  display->setCursor(0, 48);
+  display->setTextColor(ST77XX_WHITE);
+  display->setFont();
+  display->setTextSize(1);
+  display->setCursor(1, 116);
   display->println(displayTime);
   
   if (!IS_24HOUR) {
     String ampm = timeClient.getAmPm();
-    display->setTextSize(1);
-    display->setCursor(39, 54);
+    display->setCursor(32, 116);
     display->println(ampm);
   }
 
-  display->setTextSize(2);
+  // Draw top horizontal line
+  display->drawRect(0, 17, 128, 1, ST77XX_WHITE);
+  
+  display->fillRect(58, 116, 25, 10, ST77XX_WHITE);
+  display->setTextSize(1);
   String percent = String(printerClient.getProgressCompletion()) + "%";
-  display->setCursor(64, 48);
+  display->setCursor(58,116);
   display->println(percent);
   
   // Draw indicator to show next update
   int updatePos = (printerClient.getProgressCompletion().toFloat() / float(100)) * 128;
-  display->drawRect(0, 41, 128, 6, ST77XX_WHITE);
-  display->drawFastHLine(0, 42, updatePos, ST77XX_WHITE);
-  display->drawFastHLine(0, 43, updatePos, ST77XX_WHITE);
-  display->drawFastHLine(0, 44, updatePos, ST77XX_WHITE);
-  display->drawFastHLine(0, 45, updatePos, ST77XX_WHITE);
+  display->drawRect(0, 105, 128, 7, ST77XX_WHITE);
+  display->fillRect(1, 106, updatePos, 5, ST77XX_WHITE);
+
+  // Draw bottom horizontal line
+  display->drawRect(0, 111, 128, 1, ST77XX_WHITE);
   
   drawRssi(display);
 }
 
 void drawClockHeaderOverlay(Adafruit_ST7735 *display, ST7735DisplayUiState* state) {
   display->setTextColor(ST77XX_WHITE);
+  display->setFont();
   display->setTextSize(1);
   String displayTime = timeClient.getAmPmHours() + ":" + timeClient.getMinutes();
   if (IS_24HOUR) {
     displayTime = timeClient.getHours() + ":" + timeClient.getMinutes();
   }
-  display->setCursor(0, 48);
+  display->setCursor(1, 116);
   display->println(displayTime);
   
   if (!IS_24HOUR) {
     String ampm = timeClient.getAmPm();
-    display->setCursor(39, 54);
+    display->setCursor(32, 116);
     display->println(ampm);
   }
   
   if (!IS_24HOUR) {
     display->setTextSize(1);
-    display->setCursor(0, 48);
+    display->setCursor(32, 116);
     display->println(timeClient.getAmPm());
     if (printerClient.isPSUoff()) {
-      display->setCursor(64, 47);
-      display->println("psu off");
+      drawStringCentered(display, 0, 4, "psu off");
     } else {
-      display->setCursor(64, 47);
-      display->println("offline");
+      drawStringCentered(display, 0, 4, "offline");
     }
   } else {
     if (printerClient.isPSUoff()) {
-      display->setCursor(0, 47);
-      display->println("psu off");
+      drawStringCentered(display, 0, 4, "psu off");
     } else {
-      display->setCursor(0, 47);
-      display->println("offline");
+      drawStringCentered(display, 0, 4, "offline");
     }
   }
-  display->drawRect(0, 43, 128, 2, ST77XX_WHITE);
+
+  // Draw bottom horizontal line
+  display->drawRect(0, 111, 128, 1, ST77XX_WHITE);
+  //display->drawRect(0, 43, 128, 2, ST77XX_WHITE);
  
   drawRssi(display);
 }
 
-void drawRssi(Adafruit_ST7735 *display) {
+void drawStringCentered(Adafruit_ST7735 *display, int16_t x, int16_t y, String text) {
+  int16_t  x1, y1;
+  uint16_t w, h;
+  display->getTextBounds(text, x, y, &x1, &y1, &w, &h);
+  if (w > display->width())
+    display->setCursor(x, y);
+  else
+    display->setCursor(((display->width()-w)/2)+x, y);
+  display->println(text);
+}
 
- 
+void drawRssi(Adafruit_ST7735 *display) {
   int8_t quality = getWifiQuality();
+  uint32_t color = ST77XX_RED;
+  if (quality >= 30)
+    color = ST77XX_YELLOW;
+  else if (quality >= 60)
+    color = ST77XX_GREEN;
+
+  // clear out field of rssi
+  //display->fillRect(114, 113, 14, 16, ST77XX_BLACK);
+  
   for (int8_t i = 0; i < 4; i++) {
     for (int8_t j = 0; j < 3 * (i + 2); j++) {
       if (quality > i * 25 || j == 0) {
-        display->drawPixel(114 + 4 * i, 63 - j, ST77XX_WHITE);
+        display->drawPixel(114 + 4 * i, 127 - j, color);
       }
     }
   }
@@ -1283,8 +1318,6 @@ void checkDisplay() {
       display.fillScreen(ST77XX_BLACK);
        
       display.setTextSize(2);
-      //display.setTextAlignment(TEXT_ALIGN_CENTER);
-      //display.setContrast(255); // default is 255
       display.setCursor(64, 5);
       display.println("Printer Online\nWake up...");
        
@@ -1297,21 +1330,22 @@ void checkDisplay() {
       Serial.println("Clock Mode is turned on.");
       if (!DISPLAYWEATHER) {
         ui.disableAutoTransition();
-        //REV ui.setFrames(clockFrame, 1);
-        //REV clockFrame[0] = drawClock;
+        ui.setFrames(clockFrame, 2);
+        clockFrame[0] = drawClock;
+        clockFrame[1] = drawBitcoin;
       } else {
         ui.enableAutoTransition();
-        //REV ui.setFrames(clockFrame, 3);
-        //REV clockFrame[0] = drawClock;
-        //REV clockFrame[1] = drawWeather;
-        //REV clockFrame[2] = drawBitcoin;
+        ui.setFrames(clockFrame, 3);
+        clockFrame[0] = drawClock;
+        clockFrame[1] = drawWeather;
+        clockFrame[2] = drawBitcoin;
       }
-      //REV ui.setOverlays(clockOverlay, numberOfOverlays);
+      ui.setOverlays(clockOverlay, numberOfOverlays);
       isClockOn = true;
     } else if (printerClient.isOperational() && !printerClient.isPSUoff() && isClockOn) {
       Serial.println("Printer Monitor is active.");
       ui.setFrames(frames, numberOfFrames);
-      //ui.setOverlays(overlays, numberOfOverlays);
+      ui.setOverlays(overlays, numberOfOverlays);
       ui.enableAutoTransition();
       isClockOn = false;
     }

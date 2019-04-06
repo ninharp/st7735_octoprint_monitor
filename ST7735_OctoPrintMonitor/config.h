@@ -46,23 +46,31 @@ SOFTWARE.
 #include "BitcoinApiClient.h"
 #include "FS.h"
 #include "ST7735DisplayUi.h"
+#include "Icons.h"
+
+//Fonts
+#include <Fonts/FreeSans24pt7b.h>
+#include <Fonts/FreeSans12pt7b.h>
+#include <Fonts/FreeSansBold12pt7b.h>
+#include <Fonts/FreeSans9pt7b.h>
+#include <Fonts/FreeSansBold9pt7b.h>
 
 // OctoPrint Monitoring -- Monitor your 3D printer OctoPrint Server
-String OctoPrintApiKey = "E3B9002E35F94EE7B1355E10C3E8763E";   // ApiKey from your User Account on OctoPrint
+String OctoPrintApiKey = "";   // ApiKey from your User Account on OctoPrint
 String OctoPrintHostName = "octopi";// Default 'octopi' -- or hostname if different (optional if your IP changes)
-String OctoPrintServer = "192.168.178.86";   // IP or Address of your OctoPrint Server (DO NOT include http://)
+String OctoPrintServer = "";   // IP or Address of your OctoPrint Server (DO NOT include http://)
 int OctoPrintPort = 80;        // the port you are running your OctoPrint server on (usually 80);
 String OctoAuthUser = "";      // only used if you have haproxy or basic athentintication turned on (not default)
 String OctoAuthPass = "";      // only used with haproxy or basic auth (only needed if you must authenticate)
 
 // Weather Configuration
 boolean DISPLAYWEATHER = false; // true = show weather when not printing / false = no weather
-String WeatherApiKey = "be48be5d2d1ad12625651a299746e5e8"; // Your API Key from http://openweathermap.org/
+String WeatherApiKey = ""; // Your API Key from http://openweathermap.org/
 // Default City Location (use http://openweathermap.org/find to find city ID)
 int CityIDs[] = { 2953234 }; //Only USE ONE for weather marquee
 boolean IS_METRIC = true; // false = Imperial and true = Metric
 // Languages: ar, bg, ca, cz, de, el, en, fa, fi, fr, gl, hr, hu, it, ja, kr, la, lt, mk, nl, pl, pt, ro, ru, se, sk, sl, es, tr, ua, vi, zh_cn, zh_tw
-String WeatherLanguage = "de";  //Default (en) English
+String WeatherLanguage = "en";  //Default (en) English
 
 // Bitcoin Client - NONE or empty is off
 String BitcoinCurrencyCode = "EUR";  // Change to USD, GBD, EUR, or NONE -- this can be managed in the Web Interface
