@@ -27,7 +27,6 @@ I will add some more features at time, the bigger screen size got a little more 
 * Fully configurable from the web interface (not required to update Settings.h)
 * Supports OTA (loading firmware over WiFi connection on same LAN)
 * Basic Authentication to protect your settings
-* Version 2.2 added the ability to update firmware through web interface from a compiled binary
 * Can query the Octoprint [PSU Control plugin](https://plugins.octoprint.org/plugins/psucontrol/) to enter clock or blank mode when PSU is off
 
 ## Required Parts:
@@ -56,7 +55,10 @@ https://www.thingiverse.com/thing:3532451
 ## Flashing precompiled binary
 There is a precompiled binary for NodeMCU with ESP12 in the root of the repository which you can directly flash onto your NodeMCU
 
-Version 2.2 introduced the ability to upgrade pre-compiled firmware from a binary file.  In version 2.3 and on you should find binary files that can be uploaded to your printer monitor via the web interface.  From the main menu in the web interface select "Firmware Update" and follow the prompts.
+or 
+
+From the main menu in the web interface select "Firmware Update" and follow the prompts.
+
 * **printermonitor.ino.nodemcu_0.9_ST7735.bin** - compiled for NodeMCU 0.9 ESP-12 for 1,44" ST7735 TFT (default)
 * **printermonitor.ino.nodemcu_1.0_ST7735.bin** - compiled for NodeMCU 1.0 ESP-12E for 1,44" ST7735 TFT (default)
 
