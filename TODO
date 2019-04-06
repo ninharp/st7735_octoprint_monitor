@@ -1,9 +1,13 @@
 ** Porting
-* Display off is missing
-* Frames/Flickering ...
-
-
+* Change bottom left clock to "offline" "psu off" its redundant in clock mode and the offline on the top looks weird
+* Display off is missing, maybe just LED pin on any digital pin or some fet between?
+* Frames/Flickering ... maybe every function is responsible for the cleaning itself is a possibility!?
+* Add Bitcoin to configuration webpage
+* Weather font is missing and also the whole screen isn ready yet
 
 ** Features
-* Make colors of ui customizable
-* Current Z-Height would be wonderful
+* Readd screen3 with dimensions, filament info and foo
+* Remove bitcoin completely?
+* Make colors of ui customizable in webinterface (background, ui, text, ...)
+* Maybe some fonts choosable from a list in webinterface?
+* Current Z-Height would be wonderful, but cant find in octoprint api!
